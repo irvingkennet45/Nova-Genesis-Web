@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="icon" type="image/x-icon" href="./assets/icons/favicon.ico" />
+
+    <title>Nova Genesis</title>
+    <meta
+      name="description"
+      content="Nova Genesis creative platform and digital storefront for graphic design, commissions, and print collections."
+    />
+
+    <link rel="stylesheet" href="./core/css/main-styles.css" />
+    <link rel="stylesheet" href="./core/css/pages/homepage-styles.css" />
+  </head>
+
+  <body>
+    <div class="page-shell">
+      <header class="site-header liquid-glass" aria-label="Main navigation bar">
+        <div class="brand-block">
+          <a href="./index.html" class="brand-link" aria-label="Nova Genesis Homepage">  
+          <img
+            class="brand-logo"
+            src="./assets/icons/svg-logos/nova-genesis-main-logo.svg"
+            alt="Nova Genesis logo"
+          />
+          </a>
+        </div>
+
+        <nav class="main-nav" aria-label="Main navigation">
+          <div class="nav-group nav-group--shop">
+            <span class="nav-star" aria-hidden="true"></span>
+            <div class="shop-menu-wrap">
+              <button class="nav-item nav-item-link nav-item-link--shop" type="button" aria-expanded="false" aria-haspopup="true">shop</button>
+              <div class="shop-dropdown liquid-glass" aria-label="Shop menu">
+                <div class="shop-dropdown-panel">
+                  <a class="dropdown-link dropdown-link--group" href="catalog.html">
+                    <span class="dropdown-star" aria-hidden="true"></span>
+                    <span>all</span>
+                    <span class="dropdown-caret" aria-hidden="true">
+                      <img src="./assets/icons/nav-icons/arrow-right-corner.svg" alt="" aria-hidden="true" />
+                    </span>
+                  </a>
+
+                  <button class="dropdown-link dropdown-link--group" type="button" data-group="categories">
+                    <span class="dropdown-star" aria-hidden="true"></span>
+                    <span class="dropdown-text">categories</span>
+                    <span class="dropdown-caret" aria-hidden="true">
+                      <img src="./assets/icons/nav-icons/arrow-right.svg" alt="" aria-hidden="true" />
+                    </span>
+                  </button>
+
+                  <button class="dropdown-link dropdown-link--group" type="button" data-group="collections">
+                    <span class="dropdown-star" aria-hidden="true"></span>
+                    <span class="dropdown-text">collections</span>
+                    <span class="dropdown-caret" aria-hidden="true">
+                      <img src="./assets/icons/nav-icons/arrow-right.svg" alt="" aria-hidden="true" />
+                    </span>
+                  </button>
+                </div>
+
+                <div class="shop-submenu liquid-glass" id="group-categories" aria-label="Categories menu">
+                  <a href="./shop/categories/posters.html"><span>posters</span><img src="./assets/icons/page-type-icons/posters-icon.svg" alt="" aria-hidden="true" /></a>
+                  <a href="./shop/categories/typefaces.html"><span>typefaces</span><img src="./assets/icons/page-type-icons/typesfaces-icon.svg" alt="" aria-hidden="true" /></a>
+                  <a href="./shop/categories/wallpapers.html"><span>wallpapers</span><img src="./assets/icons/page-type-icons/wallpapers-icon.svg" alt="" aria-hidden="true" /></a>
+                </div>
+
+                <div class="shop-submenu liquid-glass" id="group-collections" aria-label="Collections menu">
+                  <a href="./shop/collections/fashion.html"><span>fashion</span><img src="./assets/icons/page-type-icons/fashion-icon.svg" alt="" aria-hidden="true" /></a>
+                  <a href="./shop/collections/music.html"><span>music</span><img src="./assets/icons/page-type-icons/music-icon.svg" alt="" aria-hidden="true" /></a>
+                  <a href="./shop/collections/y2k.html"><span>y2k</span><img src="./assets/icons/page-type-icons/y2k-icon.svg" alt="" aria-hidden="true" /></a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="nav-group">
+            <span class="nav-star" aria-hidden="true"></span>
+            <a class="nav-item nav-item-link" href="#">commissions</a>
+          </div>
+
+          <div class="nav-group">
+            <span class="nav-star" aria-hidden="true"></span>
+            <a class="nav-item nav-item-link" href="#about-section">about/contact</a>
+          </div>
+        </nav>
+
+        <a class="bag-button" href="#" aria-label="Shopping bag">
+          <img src="./assets/icons/nav-icons/shopping-bag-icon.svg" alt="Shopping bag icon" />
+        </a>
+      </header>
+
+      <main class="content-stack">
+        <section class="hero-panel liquid-panel" aria-label="Featured design showcase">
+          <video class="section-video" autoplay muted loop playsinline aria-hidden="true">
+            <source src="./assets/vids/section-backgrounds/homepage/bubble-loop.mp4" type="video/mp4" />
+          </video>
+
+          <div class="hero-logo-wrap glass-title">
+            <img
+              class="hero-logo-image"
+              src="./assets/icons/svg-logos/nova-genesis-secondary-logo.svg"
+              alt="Nova Genesis"
+            />
+            <p class="hero-tagline">a design company</p>
+          </div>
+
+          <div class="image-stack" aria-label="Featured design collage" id="photo-carousel">
+            <div class="slide" data-index="0"><img src="./assets/imgs/vision.jpg" alt="Vision Y2K artwork" /></div>
+            <div class="slide" data-index="1"><img src="./assets/imgs/company don.jpg" alt="Company Don Toliver artwork" /></div>
+            <div class="slide" data-index="2"><img src="./assets/imgs/jackboys ii.jpg" alt="Jackboys II artwork" /></div>
+            <div class="slide" data-index="3"><img src="./assets/imgs/weeknd.jpg" alt="Weeknd artwork" /></div>
+            <div class="slide" data-index="4"><img src="./assets/imgs/night scene v2 don toliver.jpg" alt="Night Scene V2 artwork" /></div>
+          </div>
+        </section>
+
+        <section class="about-panel liquid-panel" id="about-section" aria-label="About Nova Genesis">
+          <video class="section-video clouds-video" autoplay muted loop playsinline aria-hidden="true">
+            <source src="./assets/vids/section-backgrounds/homepage/clouds-loop.mp4" type="video/mp4" />
+          </video>
+
+          <div class="about-copy-wrap">
+            <div class="hero-logo-wrap mini-logo glass-title">
+              <img
+                class="hero-logo-image about-logo-image"
+                src="./assets/icons/svg-logos/nova-genesis-secondary-logo.svg"
+                alt="Nova Genesis"
+              />
+              <p class="hero-tagline about-tagline">about</p>
+            </div>
+
+            <p class="about-copy">
+              Welcome to Nova Genesis. We are a creative platform and digital storefront dedicated to premium graphic design.
+              Heavily inspired by the bold visual languages of modern hip-hop and editorial print media, our catalog features a curated selection
+              of physical prints, digital wallpapers, and custom web fonts. Beyond our ready-made collections, we offer tailored commission services
+              to help artists and musicians bring their specific visual identities to life.
+            </p>
+          </div>
+
+          <aside class="social-column" aria-label="Social links">
+            <a href="https://www.instagram.com/novagenesisdesignz/" target="_blank" rel="noreferrer" class="social-card">
+              <span class="social-label">insta</span>
+              <img class="social-icon" src="./assets/icons/external-links/insta-icon.svg" alt="Instagram" />
+            </a>
+            <a href="https://twitter.com/novagenesis" target="_blank" rel="noreferrer" class="social-card">
+              <span class="social-label">twitter</span>
+              <img class="social-icon" src="./assets/icons/external-links/twitter-icon.svg" alt="Twitter" />
+            </a>
+            <a href="mailto:inquires@novagenesis.com" class="social-card">
+              <span class="social-label">email</span>
+              <img class="social-icon" src="./assets/icons/external-links/email-icon.svg" alt="Email" />
+            </a>
+            <a href="tel:+15551234567" class="social-card">
+              <span class="social-label">txt</span>
+              <img class="social-icon" src="./assets/icons/external-links/txt-msg-icon.svg" alt="Text message" />
+            </a>
+          </aside>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <hr class="footer-divider" />
+        <div class="footer-content">
+          <p>
+            <span>© 2026</span>
+            <span>nova</span>
+            <span>genesis.</span>
+            <span>all</span>
+            <span>rights</span>
+            <span>reserved.</span>
+          </p>
+          <div class="footer-links" aria-label="Social links">
+            <a href="https://www.instagram.com/novagenesisdesignz/" target="_blank" rel="noreferrer">instagram</a>
+            <a href="https://twitter.com/novagenesis" target="_blank" rel="noreferrer">twitter</a>
+            <a href="mailto:inquires@novagenesis.com">email</a>
+            <a href="tel:+15551234567">txt</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script src="./core/js/main.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.shop-submenu').forEach((panel) => {
+          const reset = () => {
+            panel.style.setProperty('--tilt-x', '0deg');
+            panel.style.setProperty('--tilt-y', '0deg');
+            panel.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) scale(1)';
+          };
+
+          const move = (event) => {
+            const rect = panel.getBoundingClientRect();
+            const x = (event.clientX - rect.left) / rect.width;
+            const y = (event.clientY - rect.top) / rect.height;
+            const rotateY = (x - 0.5) * 18;
+            const rotateX = (0.5 - y) * 16;
+
+            panel.style.setProperty('--tilt-x', `${rotateX.toFixed(2)}deg`);
+            panel.style.setProperty('--tilt-y', `${rotateY.toFixed(2)}deg`);
+            panel.style.transform = `perspective(800px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) scale(1.03)`;
+          };
+
+          panel.addEventListener('pointermove', move);
+          panel.addEventListener('mousemove', move);
+          panel.addEventListener('pointerleave', reset);
+          panel.addEventListener('mouseleave', reset);
+          panel.addEventListener('pointercancel', reset);
+        });
+      });
+    </script>
+    <script src="./core/js/homepage.js"></script>
+  </body>
+</html>

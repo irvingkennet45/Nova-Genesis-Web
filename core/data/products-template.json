@@ -1,0 +1,77 @@
+{
+  "schema": {
+    "productTitle": {
+      "description": "The name of the product.",
+      "required": true
+    },
+    "productPrice": {
+      "description": "The price of the selected product.",
+      "required": true
+    },
+    "deliveryTime": {
+      "description": "Estimated delivery time for the product or service.",
+      "required": true
+    },
+    "deliveryType": {
+      "description": "Human-readable delivery flag such as Digital, Physical, or Service.",
+      "required": true
+    },
+    "canvasSize": {
+      "description": "Only applies to posters or prints. Example: 8x11 in.",
+      "required": false
+    },
+    "resolution": {
+      "description": "Only applies to wallpapers. Example: 720p, HD, 2K, 4K.",
+      "required": false
+    },
+    "ratio": {
+      "description": "Only applies to wallpapers. Example: 16:9, 9:16, 1:1.",
+      "required": false
+    },
+    "commissionType": {
+      "description": "Only applies to commissions. Example: Album Cover or Poster.",
+      "required": false
+    },
+    "units": {
+      "description": "The amount of items in stock for that product.",
+      "required": true
+    },
+    "inStockFlag": {
+      "description": "Flags the item as in stock, low stock, or out of stock.",
+      "required": true
+    },
+    "description": {
+      "description": "The product description or backstory behind the piece.",
+      "required": true
+    },
+    "category": {
+      "description": "The category the product is in, such as Posters or Typefaces.",
+      "required": true
+    },
+    "collection": {
+      "description": "The collection the product belongs to, such as Music or Y2K.",
+      "required": false
+    },
+    "type": {
+      "description": "The specific product type, such as Poster, Desktop Wallpaper, or Display Typeface.",
+      "required": true
+    }
+  },
+  "example": {
+    "id": "nova-genesis-clash-display-typeface",
+    "productTitle": "Nova Genesis \"Clash Display\" Typeface",
+    "productPrice": 48.99,
+    "deliveryTime": "Instant digital delivery",
+    "deliveryType": "Digital",
+    "canvasSize": null,
+    "resolution": null,
+    "ratio": null,
+    "commissionType": null,
+    "units": 18,
+    "inStockFlag": "in stock",
+    "description": "A stylized display font with elevated contrast and bold personality.",
+    "category": "Typefaces",
+    "collection": "Y2K",
+    "type": "Display Typeface"
+  }
+}

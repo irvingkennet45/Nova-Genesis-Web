@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="./assets/icons/favicon.ico" />
+    <title>Nova Genesis | Order Confirmation</title>
+    <meta name="description" content="Order confirmation page for a Nova Genesis purchase." />
+    <link rel="stylesheet" href="./core/css/main-styles.css" />
+    <link rel="stylesheet" href="./core/css/pages/store-styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="site-header liquid-glass" aria-label="Main navigation bar">
+        <div class="brand-block">
+          <a href="./index.html" class="brand-link" aria-label="Nova Genesis homepage">
+            <img class="brand-logo" src="./assets/icons/svg-logos/nova-genesis-main-logo.svg" alt="Nova Genesis logo" />
+          </a>
+        </div>
+
+        <nav class="main-nav" aria-label="Main navigation">
+          <div class="nav-group nav-group--shop">
+            <span class="nav-star" aria-hidden="true"></span>
+            <div class="shop-menu-wrap">
+              <button class="nav-item nav-item-link nav-item-link--shop" type="button" aria-expanded="false" aria-haspopup="true">shop</button>
+              <div class="shop-dropdown liquid-glass" aria-label="Shop menu">
+                <div class="shop-dropdown-panel">
+                  <a class="dropdown-link dropdown-link--group" href="./catalog.html"><span class="dropdown-star" aria-hidden="true"></span><span>all</span><span class="dropdown-caret" aria-hidden="true"><img src="./assets/icons/nav-icons/arrow-right-corner.svg" alt="" aria-hidden="true" /></span></a>
+                  <button class="dropdown-link dropdown-link--group" type="button" data-group="categories"><span class="dropdown-star" aria-hidden="true"></span><span class="dropdown-text">categories</span><span class="dropdown-caret" aria-hidden="true"><img src="./assets/icons/nav-icons/arrow-right.svg" alt="" aria-hidden="true" /></span></button>
+                  <button class="dropdown-link dropdown-link--group" type="button" data-group="collections"><span class="dropdown-star" aria-hidden="true"></span><span class="dropdown-text">collections</span><span class="dropdown-caret" aria-hidden="true"><img src="./assets/icons/nav-icons/arrow-right.svg" alt="" aria-hidden="true" /></span></button>
+                </div>
+                <div class="shop-submenu liquid-glass" id="group-categories" aria-label="Categories menu">
+                  <a href="./shop/categories/posters.html"><span>posters</span><img src="./assets/icons/page-type-icons/posters-icon.svg" alt="" aria-hidden="true" /></a>
+                  <a href="./shop/categories/typefaces.html"><span>typefaces</span><img src="./assets/icons/page-type-icons/typesfaces-icon.svg" alt="" aria-hidden="true" /></a>
+                  <a href="./shop/categories/wallpapers.html"><span>wallpapers</span><img src="./assets/icons/page-type-icons/wallpapers-icon.svg" alt="" aria-hidden="true" /></a>
+                </div>
+                <div class="shop-submenu liquid-glass" id="group-collections" aria-label="Collections menu">
+                  <a href="./shop/collections/fashion.html"><span>fashion</span><img src="./assets/icons/page-type-icons/fashion-icon.svg" alt="" aria-hidden="true" /></a>
+                  <a href="./shop/collections/music.html"><span>music</span><img src="./assets/icons/page-type-icons/music-icon.svg" alt="" aria-hidden="true" /></a>
+                  <a href="./shop/collections/y2k.html"><span>y2k</span><img src="./assets/icons/page-type-icons/y2k-icon.svg" alt="" aria-hidden="true" /></a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="nav-group"><span class="nav-star" aria-hidden="true"></span><a class="nav-item nav-item-link" href="./commissions.html">commissions</a></div>
+          <div class="nav-group"><span class="nav-star" aria-hidden="true"></span><a class="nav-item nav-item-link" href="./index.html#about-section">about/contact</a></div>
+        </nav>
+
+        <div class="bag-menu-wrap">
+          <button class="bag-button" type="button" aria-label="Shopping basket">
+            <img src="./assets/icons/nav-icons/shopping-bag-icon.svg" alt="Shopping bag icon" />
+          </button>
+          <aside class="cart-panel liquid-glass" aria-label="Cart panel">
+            <div class="cart-panel-header"><h3>cart</h3><span class="cart-count">0 items</span></div>
+            <div class="cart-items"></div>
+            <div class="cart-panel-footer"><span class="cart-total">total <strong>$0.00</strong></span><a class="primary-button" href="./checkout.html">checkout</a></div>
+          </aside>
+        </div>
+      </header>
+
+      <main class="confirmation-main">
+        <section class="page-header liquid-panel">
+          <span class="eyebrow">confirmation</span>
+          <h1>order complete</h1>
+        </section>
+        <div id="order-confirmation"></div>
+      </main>
+
+      <footer class="site-footer">
+        <hr class="footer-divider" />
+        <div class="footer-content">
+          <p><span>© 2026</span><span>nova</span><span>genesis.</span><span>all</span><span>rights</span><span>reserved.</span></p>
+          <div class="footer-links" aria-label="Social links">
+            <a href="https://www.instagram.com/novagenesisdesignz/" target="_blank" rel="noreferrer">instagram</a>
+            <a href="https://twitter.com/novagenesis" target="_blank" rel="noreferrer">twitter</a>
+            <a href="mailto:inquires@novagenesis.com">email</a>
+            <a href="tel:+15551234567">txt</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script src="./core/js/main.js"></script>
+    <script src="./core/js/store.js"></script>
+  </body>
+</html>

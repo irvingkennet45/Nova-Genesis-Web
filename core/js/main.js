@@ -92,6 +92,18 @@ async function addToCart(productId, quantity = 1) {
   saveCartItems(items);
   renderCartDrawer();
 
+  // Open cart drawer so customer gets instant feedback
+  const bagMenuWrap = document.querySelector('.bag-menu-wrap');
+  const cartPanel = document.querySelector('.cart-panel');
+  const bagButton = document.querySelector('.bag-button');
+  if (bagMenuWrap && cartPanel) {
+    bagMenuWrap.classList.add('is-open');
+    cartPanel.classList.add('is-open');
+    if (bagButton) {
+      bagButton.setAttribute('aria-expanded', 'true');
+    }
+  }
+
   // If on checkout page, notify store checkout summary
   if (typeof window.renderCheckoutSummary === 'function') {
     window.renderCheckoutSummary();
@@ -145,17 +157,35 @@ async function renderCartDrawer() {
     .filter(Boolean);
 
   const subtotal = entries.reduce((sum, item) => sum + item.lineTotal, 0);
+  const rootPath = resolveSiteRootPath();
 
-  list.innerHTML = entries.map((item) => `
-    <div class="cart-item">
-      <div class="cart-item-visual" aria-hidden="true"></div>
-      <div class="cart-item-copy">
-        <strong>${item.productTitle}</strong>
-        <span>qty: ${item.quantity}</span>
+  list.innerHTML = entries.map((item) => {
+    const rawImg = item.cardImage || item.productImage;
+    const imgSrc = rawImg ? `${rootPath}${rawImg.replace(/^\.\//, '').replace(/^\//, '')}` : '';
+    const visualContent = imgSrc ? `<img src="${imgSrc}" alt="${item.productTitle}" />` : '';
+
+    return `
+      <div class="cart-item">
+        <div class="cart-item-visual" aria-hidden="true">${visualContent}</div>
+        <div class="cart-item-copy">
+          <strong>${item.productTitle}</strong>
+          <span>qty: ${item.quantity}</span>
+        </div>
+        <div class="cart-item-end">
+          <span class="cart-item-total">${formatMoney(item.lineTotal)}</span>
+          <button class="cart-item-remove" type="button" data-product-id="${item.id}" aria-label="Remove ${item.productTitle} from cart">remove</button>
+        </div>
       </div>
-      <div class="cart-item-total">${formatMoney(item.lineTotal)}</div>
-    </div>
-  `).join('');
+    `;
+  }).join('');
+
+  list.querySelectorAll('.cart-item-remove').forEach((button) => {
+    button.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      removeFromCart(button.dataset.productId);
+    });
+  });
 
   total.textContent = formatMoney(subtotal);
   count.textContent = `${entries.reduce((sum, item) => sum + item.quantity, 0)} items`;

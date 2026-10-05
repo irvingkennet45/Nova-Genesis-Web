@@ -5,10 +5,6 @@
    ========================================================================== */
 
 function resolveProductDataPath() {
-  const pathname = window.location.pathname;
-  if (typeof window.resolveProductDataPath === 'function') {
-    return window.resolveProductDataPath();
-  }
   const pathname = window.location.pathname.replace(/\\/g, '/');
   if (pathname.includes('/shop/categories/')) return '../../core/data/products.json';
   if (pathname.includes('/shop/collections/')) return '../../core/data/products.json';
@@ -18,9 +14,6 @@ function resolveProductDataPath() {
 }
 
 function resolveSiteRootPath() {
-  if (typeof window.resolveSiteRootPath === 'function') {
-    return window.resolveSiteRootPath();
-  }
   const pathname = window.location.pathname.replace(/\\/g, '/');
   if (pathname.includes('/shop/products/')) return '../../';
   if (pathname.includes('/shop/categories/')) return '../../';
@@ -30,9 +23,6 @@ function resolveSiteRootPath() {
 }
 
 function formatMoney(value) {
-  if (typeof window.formatMoney === 'function') {
-    return window.formatMoney(value);
-  }
   return `$${Number(value || 0).toFixed(2)}`;
 }
 
@@ -46,9 +36,20 @@ function formatStockLabel(value) {
 function resolveProductVisual(product) {
   if (!product) return null;
 
+  const assetRoot = `${resolveSiteRootPath()}assets/imgs/`;
+
+  // 1. Direct image property in products.json (e.g. "image": "dont be dumb asap.jpg" or "assets/imgs/...")
+  const explicitImage = product.image || product.productImage || product.cardImage;
+  if (explicitImage) {
+    if (explicitImage.startsWith('http') || explicitImage.startsWith('data:')) return explicitImage;
+    const clean = explicitImage.replace(/^\.\//, '').replace(/^\//, '');
+    if (clean.startsWith('assets/')) return `${resolveSiteRootPath()}${clean}`;
+    return `${assetRoot}${clean}`;
+  }
+
+  // 2. Keyword fallback mapping based on title or collection
   const normalized = (product.productTitle || '').toLowerCase();
   const collectionName = String(product.collection || '').toLowerCase();
-  const assetRoot = `${resolveSiteRootPath()}assets/imgs/`;
 
   const mapping = {
     'asap rocky': 'dont be dumb asap.jpg',
@@ -91,12 +92,75 @@ function renderProductVisual(product, variant = 'card') {
   const isTypeface = String(product?.type || '').toLowerCase().includes('typeface');
 
   if (isTypeface) {
-    const previewText = variant === 'detail' ? 'Abc' : 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     const fontFamily = getProductFontFamily(product);
+    const fontColor = product?.['font-color'] || product?.fontColor || product?.['font_color'] || '';
+
+    // Text selection: variant-specific text first, fallback to general display-text
+    const specificText = variant === 'detail'
+      ? (product?.['detailed-display-text'] ?? product?.['detail-display-text'] ?? product?.detailedDisplayText ?? product?.detailDisplayText)
+      : (product?.['preview-display-text'] ?? product?.['card-display-text'] ?? product?.previewDisplayText ?? product?.cardDisplayText);
+
+    const fallbackText = product?.['display-text'] ?? product?.displayText ?? product?.['display_text'] ?? product?.previewText ?? null;
+    const rawText = specificText !== undefined && specificText !== null ? specificText : fallbackText;
+
+    let glyphRowsHtml = '';
+    if (Array.isArray(rawText)) {
+      glyphRowsHtml = rawText.map((row) => `<span class="glyph-row">${row}</span>`).join('');
+    } else if (typeof rawText === 'string' && rawText.trim().length > 0) {
+      const splitLines = rawText.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+      glyphRowsHtml = splitLines.map((row) => `<span class="glyph-row">${row}</span>`).join('');
+    } else {
+      // Default specimen rows
+      glyphRowsHtml = `
+        <span class="glyph-row">ABCDEFGHIJKLMNOPQRSTUVWXYZ</span>
+        <span class="glyph-row">abcdefghijklmnopqrstuvwxyz</span>
+        <span class="glyph-row">0123456789</span>
+      `;
+    }
+
+    // Font scaling: variant-specific scale, fallback to general text-scale / font-scale
+    const specificScale = variant === 'detail'
+      ? (product?.['detailed-text-scale'] ?? product?.['detailed-font-size'] ?? product?.['detail-text-scale'] ?? product?.['detail-font-size'])
+      : (product?.['preview-text-scale'] ?? product?.['preview-font-size'] ?? product?.['card-text-scale'] ?? product?.['card-font-size']);
+    const fallbackScale = product?.['text-scale'] ?? product?.['font-scale'] ?? product?.['font-size'] ?? product?.fontSize ?? null;
+    const chosenScale = specificScale !== undefined && specificScale !== null ? specificScale : fallbackScale;
+
+    let scaleStyle = '';
+    if (chosenScale !== null && chosenScale !== undefined && String(chosenScale).trim() !== '') {
+      const sVal = String(chosenScale).trim();
+      // If pure number like 1.5 or 2, treat as rem or em or scale factor
+      if (/^[\d.]+$/.test(sVal)) {
+        scaleStyle = `font-size: ${sVal}rem;`;
+      } else {
+        scaleStyle = `font-size: ${sVal};`;
+      }
+    }
+
+    // Blur effect control: "blur": 8 or "12px" or "0" or "none"
+    const rawBlur = product?.['blur'] ?? product?.['blur-effect'] ?? product?.blur ?? null;
+    let blurStyle = '';
+    if (imageUrl) {
+      if (rawBlur !== null && rawBlur !== undefined) {
+        const bStr = String(rawBlur).trim().toLowerCase();
+        if (bStr === '0' || bStr === 'none' || bStr === '0px') {
+          blurStyle = 'backdrop-filter: none; -webkit-backdrop-filter: none;';
+        } else if (/^[\d.]+$/.test(bStr)) {
+          blurStyle = `backdrop-filter: blur(${bStr}px); -webkit-backdrop-filter: blur(${bStr}px);`;
+        } else {
+          blurStyle = `backdrop-filter: blur(${bStr}); -webkit-backdrop-filter: blur(${bStr});`;
+        }
+      }
+    }
+
+    const colorStyle = fontColor ? `color: ${fontColor};` : '';
+    const bgImageStyle = imageUrl ? `background-image: url('${imageUrl}'); background-size: cover; background-position: center;` : '';
+
     return `
-      <div class="product-visual product-visual--typeface" aria-label="${product.productTitle} typeface preview">
-        <div class="typeface-preview-surface">
-          <span style="font-family: ${fontFamily};">${previewText}</span>
+      <div class="product-visual product-visual--typeface ${variant === 'detail' ? 'product-visual--detail' : ''}" style="${bgImageStyle}" aria-label="${product.productTitle} typeface preview">
+        <div class="typeface-preview-surface ${imageUrl ? 'typeface-preview-surface--has-bg' : ''}" style="${blurStyle}">
+          <div class="typeface-glyphs" style="font-family: ${fontFamily}; ${colorStyle} ${scaleStyle}">
+            ${glyphRowsHtml}
+          </div>
         </div>
       </div>
     `;
@@ -111,14 +175,6 @@ function renderProductVisual(product, variant = 'card') {
   }
 
   return `<div class="product-visual" aria-label="${product.productTitle} preview"></div>`;
-}
-
-function getProductFontFamily(product) {
-  const source = (product?.fontFamily || product?.productTitle || product?.type || '').toLowerCase();
-  if (source.includes('jetbrains') || source.includes('mono')) return "'JetBrains Mono', monospace";
-  if (source.includes('clash')) return "'Clash Display', sans-serif";
-  if (source.includes('octane') || source.includes('high')) return "'High Octane', sans-serif";
-  return "'Clash Display', sans-serif";
 }
 
 function isProductAvailable(product) {
@@ -148,33 +204,16 @@ function bindQuantityStepper(container) {
   });
 }
 
-function getCartItems() {
-  try {
-    const items = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
-    return Array.isArray(items) ? items : [];
-  } catch (error) {
-    return [];
 async function loadProducts() {
   if (window.NOVA_PRODUCTS && window.NOVA_PRODUCTS.length) {
     return window.NOVA_PRODUCTS;
   }
-}
 
-function saveCartItems(items) {
-  localStorage.setItem(CART_KEY, JSON.stringify(items));
-}
   const response = await fetch(resolveProductDataPath());
   if (!response.ok) {
     throw new Error('Unable to load product data');
   }
 
-function resolveSiteRootPath() {
-  const pathname = window.location.pathname;
-  if (pathname.includes('/shop/products/')) return '../../';
-  if (pathname.includes('/shop/categories/')) return '../../';
-  if (pathname.includes('/shop/collections/')) return '../../';
-  if (pathname.includes('/shop/')) return '../';
-  return './';
   const payload = await response.json();
   const products = Array.isArray(payload.products) ? payload.products : [];
   window.NOVA_PRODUCTS = products;
@@ -182,50 +221,17 @@ function resolveSiteRootPath() {
 }
 
 async function ensureProductsLoaded() {
-  if (!window.NOVA_PRODUCTS || !window.NOVA_PRODUCTS.length) {
-    window.NOVA_PRODUCTS = await loadProducts();
-  if (typeof window.ensureProductsLoaded === 'function') {
-    return window.ensureProductsLoaded();
-  }
-  return window.NOVA_PRODUCTS;
   return loadProducts();
-}
-
-function formatMoney(value) {
-  return `$${Number(value || 0).toFixed(2)}`;
 }
 
 function getProductById(productId) {
   return (window.NOVA_PRODUCTS || []).find((product) => product.id === productId) || null;
 }
 
-async function addToCart(productId, quantity = 1) {
-  const products = window.NOVA_PRODUCTS && window.NOVA_PRODUCTS.length ? window.NOVA_PRODUCTS : await loadProducts();
-  const product = products.find((entry) => entry.id === productId) || null;
-  if (!product || !isProductAvailable(product)) return;
 /* --------------------------------------------------------------------------
    Catalog & Archive Rendering
    -------------------------------------------------------------------------- */
 
-  const requested = Math.max(1, Math.floor(Number(quantity) || 1));
-  const maxUnits = Number(product.units || 0);
-  const safeQuantity = maxUnits > 0 ? Math.min(requested, maxUnits) : requested;
-
-  const items = getCartItems();
-  const match = items.find((entry) => entry.id === productId);
-
-  if (match) {
-    const nextTotal = match.quantity + safeQuantity;
-    match.quantity = maxUnits > 0 ? Math.min(nextTotal, maxUnits) : nextTotal;
-  } else {
-    items.push({ id: productId, quantity: safeQuantity });
-  }
-
-  saveCartItems(items);
-  renderCartDrawer();
-  if (document.body.dataset.page === 'checkout') {
-    renderCheckoutSummary();
-  }
 function normalizeFilterValue(value) {
   return String(value || '')
     .toLowerCase()
@@ -233,31 +239,15 @@ function normalizeFilterValue(value) {
     .trim();
 }
 
-function removeFromCart(productId) {
-  const nextItems = getCartItems().filter((entry) => entry.id !== productId);
-  saveCartItems(nextItems);
-  renderCartDrawer();
-  if (document.body.dataset.page === 'checkout') {
-    renderCheckoutSummary();
-  }
-}
 function matchesArchiveFilter(product, filterKey, filterValue) {
   if (!filterKey || !filterValue) return true;
 
-async function renderCartDrawer() {
-  const panel = document.querySelector('.cart-panel');
-  if (!panel) return;
   const actualValue = normalizeFilterValue(product[filterKey]);
   const targetValue = normalizeFilterValue(filterValue);
 
-  const items = getCartItems();
-  const list = panel.querySelector('.cart-items');
-  const total = panel.querySelector('.cart-total strong');
-  const count = panel.querySelector('.cart-count');
   if (!actualValue || !targetValue) return false;
   if (actualValue === targetValue) return true;
 
-  if (!list || !total || !count) return;
   if (filterKey === 'category') {
     const aliases = {
       posters: ['posters', 'poster', 'prints', 'print', 'posters prints', 'poster prints'],
@@ -267,48 +257,10 @@ async function renderCartDrawer() {
       services: ['services', 'service', 'commission', 'commissions']
     };
 
-  if (!items.length) {
-    list.innerHTML = `
-      <div class="empty-cart">
-        <strong>your cart is empty.</strong>
-        <span>add a poster, wallpaper, or typeface to get started.</span>
-      </div>
-    `;
-    total.textContent = '$0.00';
-    count.textContent = '0 items';
-    return;
     const lookup = aliases[targetValue] || [targetValue];
     return lookup.some((alias) => actualValue === alias || actualValue.includes(alias) || alias.includes(actualValue));
   }
 
-  const products = await ensureProductsLoaded();
-  const entries = items
-    .map((entry) => {
-      const product = products.find((item) => item.id === entry.id);
-      if (!product) return null;
-      return {
-        ...product,
-        quantity: entry.quantity,
-        lineTotal: Number(product.productPrice) * entry.quantity,
-      };
-    })
-    .filter(Boolean);
-
-  const subtotal = entries.reduce((sum, item) => sum + item.lineTotal, 0);
-
-  list.innerHTML = entries.map((item) => `
-    <div class="cart-item">
-      <div class="cart-item-visual" aria-hidden="true"></div>
-      <div class="cart-item-copy">
-        <strong>${item.productTitle}</strong>
-        <span>qty: ${item.quantity}</span>
-      </div>
-      <div class="cart-item-total">${formatMoney(item.lineTotal)}</div>
-    </div>
-  `).join('');
-
-  total.textContent = formatMoney(subtotal);
-  count.textContent = `${entries.reduce((sum, item) => sum + item.quantity, 0)} items`;
   return actualValue.includes(targetValue) || targetValue.includes(actualValue);
 }
 
@@ -328,11 +280,13 @@ function renderProductCard(product) {
         </div>
       </div>
       <div class="product-card-actions">
-        <span class="product-price">${formatMoney(product.productPrice)}</span>
-        <div class="qty-stepper" aria-label="Quantity selector for ${product.productTitle}">
-          <button type="button" class="qty-step" data-qty-action="decrement" aria-label="Decrease quantity">-</button>
-          <input class="qty-input" type="number" min="1" max="${maxUnits}" value="1" ${available ? '' : 'disabled'} />
-          <button type="button" class="qty-step" data-qty-action="increment" aria-label="Increase quantity">+</button>
+        <div class="product-card-row">
+          <span class="product-price">${formatMoney(product.productPrice)}</span>
+          <div class="qty-stepper" aria-label="Quantity selector for ${product.productTitle}">
+            <button type="button" class="qty-step" data-qty-action="decrement" aria-label="Decrease quantity">-</button>
+            <input class="qty-input" type="number" min="1" max="${maxUnits}" value="1" ${available ? '' : 'disabled'} />
+            <button type="button" class="qty-step" data-qty-action="increment" aria-label="Increase quantity">+</button>
+          </div>
         </div>
         <button class="secondary-button add-to-cart" type="button" data-product-id="${product.id}" ${available ? '' : 'disabled'}>${available ? 'add to cart' : 'unavailable :('}</button>
       </div>
@@ -341,59 +295,10 @@ function renderProductCard(product) {
   `;
 }
 
-async function loadProducts() {
-  if (window.NOVA_PRODUCTS && window.NOVA_PRODUCTS.length) {
-    return window.NOVA_PRODUCTS;
-  }
-
-  const response = await fetch(resolveProductDataPath());
-  if (!response.ok) {
-    throw new Error('Unable to load product data');
-  }
-
-  const payload = await response.json();
-  const products = Array.isArray(payload.products) ? payload.products : [];
-  window.NOVA_PRODUCTS = products;
-  return products;
-}
-
-function normalizeFilterValue(value) {
-  return String(value || '')
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, ' ')
-    .trim();
-}
-
-function matchesArchiveFilter(product, filterKey, filterValue) {
-  if (!filterKey || !filterValue) return true;
-
-  const actualValue = normalizeFilterValue(product[filterKey]);
-  const targetValue = normalizeFilterValue(filterValue);
-
-  if (!actualValue || !targetValue) return false;
-  if (actualValue === targetValue) return true;
-
-  if (filterKey === 'category') {
-    const aliases = {
-      posters: ['posters', 'poster', 'prints', 'print', 'posters prints', 'poster prints'],
-      wallpapers: ['wallpapers', 'wallpaper', 'digital downloads', 'desktop wallpaper', 'phone screen wallpaper', 'digital wallpaper'],
-      typefaces: ['typefaces', 'typeface', 'assets', 'font', 'fonts'],
-      bundles: ['bundles', 'bundle'],
-      services: ['services', 'service', 'commission', 'commissions']
-    };
-
-    const lookup = aliases[targetValue] || [targetValue];
-    return lookup.some((alias) => actualValue === alias || actualValue.includes(alias) || alias.includes(actualValue));
-  }
-
-  return actualValue.includes(targetValue) || targetValue.includes(actualValue);
-}
-
 function buildArchivePage() {
   const productGrid = document.querySelector('#product-grid');
   if (!productGrid) return;
 
-  const pageType = document.body.dataset.pageType || 'catalog';
   const filterKey = document.body.dataset.filterKey || '';
   const filterValue = document.body.dataset.filterValue || '';
 
@@ -411,10 +316,14 @@ function buildArchivePage() {
       button.addEventListener('click', () => {
         const stepper = button.closest('.product-card')?.querySelector('.qty-input');
         const quantity = stepper ? Number(stepper.value || 1) : 1;
-        addToCart(button.dataset.productId, quantity);
         if (typeof window.addToCart === 'function') {
           window.addToCart(button.dataset.productId, quantity);
         }
+        const prevText = button.textContent;
+        button.textContent = 'added!';
+        setTimeout(() => {
+          button.textContent = prevText;
+        }, 1200);
       });
     });
 
@@ -457,8 +366,7 @@ function renderProductPageFromData() {
         <div class="typeface-sample-box" style="font-family: ${getProductFontFamily(product)};">Nova Genesis</div>
       </div>
     ` : '';
-    const productTitleClass = hasTypeface ? 'detail-title detail-title--typeface' : 'detail-title';
-    const productTitleStyle = hasTypeface ? `style="font-family: ${getProductFontFamily(product)};"` : '';
+    const productTitleClass = 'detail-title';
     const available = isProductAvailable(product);
     const quantityMarkup = `
       <div class="qty-stepper qty-stepper--detail" aria-label="Quantity selector for ${product.productTitle}">
@@ -491,7 +399,7 @@ function renderProductPageFromData() {
         </div>
         <div class="detail-panel liquid-panel product-summary-panel">
           <div class="eyebrow">${product.deliveryType}</div>
-          <h1 class="${productTitleClass}" ${productTitleStyle}>${product.productTitle}</h1>
+          <h1 class="${productTitleClass}">${product.productTitle}</h1>
           <div class="detail-price">${formatMoney(product.productPrice)}</div>
           <p class="product-description">${product.description}</p>
           <ul class="detail-meta-list">
@@ -522,10 +430,14 @@ function renderProductPageFromData() {
       actionButton.addEventListener('click', () => {
         const quantityInput = root.querySelector('.product-quantity-input');
         const quantity = quantityInput ? Number(quantityInput.value || 1) : 1;
-        addToCart(product.id, quantity);
         if (typeof window.addToCart === 'function') {
           window.addToCart(product.id, quantity);
         }
+        const prevText = actionButton.textContent;
+        actionButton.textContent = 'added!';
+        setTimeout(() => {
+          actionButton.textContent = prevText;
+        }, 1200);
       });
     }
 
@@ -565,8 +477,7 @@ function renderProductDetailPage() {
       </div>
     ` : '';
 
-    const detailTitleClass = hasTypeface ? 'detail-title detail-title--typeface' : 'detail-title';
-    const detailTitle = hasTypeface ? 'style="font-family: ' + getProductFontFamily(product) + ';"' : '';
+    const detailTitleClass = 'detail-title';
     const available = isProductAvailable(product);
     const quantityMarkup = `
       <div class="qty-stepper qty-stepper--detail" aria-label="Quantity selector for ${product.productTitle}">
@@ -583,7 +494,7 @@ function renderProductDetailPage() {
         </div>
         <div class="detail-panel liquid-panel detail-content">
           <div class="eyebrow">${product.deliveryType}</div>
-          <h1 class="${detailTitleClass}" ${detailTitle}>${product.productTitle}</h1>
+          <h1 class="${detailTitleClass}">${product.productTitle}</h1>
           <div class="detail-price">${formatMoney(product.productPrice)}</div>
           <p>${product.description}</p>
           <ul class="detail-meta-list">
@@ -617,12 +528,17 @@ function renderProductDetailPage() {
 
     detailRoot.querySelectorAll('.add-to-cart').forEach((button) => {
       button.addEventListener('click', () => {
-        const input = detailRoot.querySelector('.product-quantity-input');
-        const quantity = input ? Number(input.value || 1) : 1;
-        addToCart(button.dataset.productId, quantity);
+        const card = button.closest('.product-card');
+        const stepper = card ? card.querySelector('.qty-input') : detailRoot.querySelector('.product-quantity-input');
+        const quantity = stepper ? Number(stepper.value || 1) : 1;
         if (typeof window.addToCart === 'function') {
           window.addToCart(button.dataset.productId, quantity);
         }
+        const prevText = button.textContent;
+        button.textContent = 'added!';
+        setTimeout(() => {
+          button.textContent = prevText;
+        }, 1200);
       });
     });
 
@@ -642,7 +558,6 @@ async function renderCheckoutSummary() {
   const summaryRoot = document.querySelector('#checkout-summary');
   if (!summaryRoot) return;
 
-  const items = getCartItems();
   const items = typeof window.getCartItems === 'function' ? window.getCartItems() : [];
   if (!items.length) {
     summaryRoot.innerHTML = `
@@ -670,7 +585,10 @@ async function renderCheckoutSummary() {
     <div class="summary-list">
       ${entries.map((item) => `
         <div class="summary-item">
-          <span>${item.productTitle} x${item.quantity}</span>
+          <div class="summary-item-info">
+            <span>${item.productTitle} x${item.quantity}</span>
+            <button class="checkout-remove-btn" type="button" data-product-id="${item.id}" aria-label="Remove ${item.productTitle}">remove</button>
+          </div>
           <strong>${formatMoney(item.lineTotal)}</strong>
         </div>
       `).join('')}
@@ -680,6 +598,16 @@ async function renderCheckoutSummary() {
       <strong>${formatMoney(total)}</strong>
     </div>
   `;
+
+  summaryRoot.querySelectorAll('.checkout-remove-btn').forEach((btn) => {
+    btn.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (typeof window.removeFromCart === 'function') {
+        window.removeFromCart(btn.dataset.productId);
+      }
+    });
+  });
 }
 
 async function initializeCheckoutForm() {
@@ -833,8 +761,6 @@ async function renderOrderConfirmation() {
 
   const params = new URLSearchParams(window.location.search);
   const orderId = params.get('order_id') || 'NG-000000';
-  const order = JSON.parse(localStorage.getItem(ORDER_KEY) || '{}');
-  const orderItems = order.items || getCartItems();
   const orderKey = window.ORDER_KEY || 'nova-genesis-order';
   const order = JSON.parse(localStorage.getItem(orderKey) || '{}');
   const orderItems = order.items || (typeof window.getCartItems === 'function' ? window.getCartItems() : []);
@@ -871,7 +797,6 @@ async function renderOrderConfirmation() {
       <div class="download-list">
         ${entries.filter((item) => item.deliveryType === 'Digital').map((item) => `
           <a href="#" aria-label="Download ${item.productTitle}">download ${item.productTitle}</a>
-        `).join('')}
         `).join('') || '<span>your downloads will be shared via email.</span>'}
       </div>
       <a class="primary-button" href="./index.html">back home</a>
@@ -897,7 +822,6 @@ function initStorefront() {
   if (checkoutSummary) renderCheckoutSummary();
   if (checkoutForm) initializeCheckoutForm();
   if (confirmation) renderOrderConfirmation();
-  renderCartDrawer();
 
   if (typeof window.bindInteractiveMotion === 'function') {
     window.bindInteractiveMotion('.product-card, .detail-panel, .commission-card');
@@ -906,5 +830,6 @@ function initStorefront() {
 
 window.renderCheckoutSummary = renderCheckoutSummary;
 window.renderOrderConfirmation = renderOrderConfirmation;
+window.resolveProductVisual = resolveProductVisual;
 
 document.addEventListener('DOMContentLoaded', initStorefront);

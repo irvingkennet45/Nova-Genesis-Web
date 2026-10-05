@@ -78,7 +78,7 @@
 
           <div class="nav-group">
             <span class="nav-star" aria-hidden="true"></span>
-            <a class="nav-item nav-item-link" href="#">commissions</a>
+            <a class="nav-item nav-item-link" href="./commissions.html">commissions</a>
           </div>
 
           <div class="nav-group">
@@ -87,9 +87,22 @@
           </div>
         </nav>
 
-        <a class="bag-button" href="#" aria-label="Shopping bag">
-          <img src="./assets/icons/nav-icons/shopping-bag-icon.svg" alt="Shopping bag icon" />
-        </a>
+        <div class="bag-menu-wrap">
+          <button class="bag-button" type="button" aria-label="Shopping basket">
+            <img src="./assets/icons/nav-icons/shopping-bag-icon.svg" alt="Shopping bag icon" />
+          </button>
+          <aside class="cart-panel liquid-glass" aria-label="Cart panel">
+            <div class="cart-panel-header">
+              <h3>cart</h3>
+              <span class="cart-count">0 items</span>
+            </div>
+            <div class="cart-items"></div>
+            <div class="cart-panel-footer">
+              <span class="cart-total">total <strong>$0.00</strong></span>
+              <a class="primary-button" href="./checkout.html">checkout</a>
+            </div>
+          </aside>
+        </div>
       </header>
 
       <main class="content-stack">
@@ -182,35 +195,6 @@
     </div>
 
     <script src="./core/js/main.js"></script>
-    <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('.shop-submenu').forEach((panel) => {
-          const reset = () => {
-            panel.style.setProperty('--tilt-x', '0deg');
-            panel.style.setProperty('--tilt-y', '0deg');
-            panel.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) scale(1)';
-          };
-
-          const move = (event) => {
-            const rect = panel.getBoundingClientRect();
-            const x = (event.clientX - rect.left) / rect.width;
-            const y = (event.clientY - rect.top) / rect.height;
-            const rotateY = (x - 0.5) * 18;
-            const rotateX = (0.5 - y) * 16;
-
-            panel.style.setProperty('--tilt-x', `${rotateX.toFixed(2)}deg`);
-            panel.style.setProperty('--tilt-y', `${rotateY.toFixed(2)}deg`);
-            panel.style.transform = `perspective(800px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) scale(1.03)`;
-          };
-
-          panel.addEventListener('pointermove', move);
-          panel.addEventListener('mousemove', move);
-          panel.addEventListener('pointerleave', reset);
-          panel.addEventListener('mouseleave', reset);
-          panel.addEventListener('pointercancel', reset);
-        });
-      });
-    </script>
     <script src="./core/js/homepage.js"></script>
   </body>
 </html>

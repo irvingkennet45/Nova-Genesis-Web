@@ -97,20 +97,11 @@ function initTypefacePageBehavior() {
   ensureFontFaceStyles();
   bindTypefaceSampleInput();
 
-  if (document.body && document.body.dataset.pageType === 'product-page') {
-    const observer = new MutationObserver(() => {
-      bindTypefaceSampleInput();
-    });
   // If on a page where product data renders dynamically, observe for font sample element insertion
   const observer = new MutationObserver(() => {
     bindTypefaceSampleInput();
   });
 
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
-  }
   observer.observe(document.body, {
     childList: true,
     subtree: true

@@ -1,11 +1,8 @@
-const homepageCarousel = document.getElementById('photo-carousel');
 /* ==========================================================================
    Nova Genesis - Homepage Specific JavaScript
    Handles hero 3D coverflow carousel and homepage interactive motion
    ========================================================================== */
 
-if (homepageCarousel) {
-  const slides = Array.from(homepageCarousel.querySelectorAll('.slide'));
 function initHomepageCarousel() {
   const carousel = document.getElementById('photo-carousel');
   if (!carousel) return;
@@ -85,7 +82,6 @@ function initHomepageCarousel() {
 
   positionSlides();
 
-  homepageCarousel.addEventListener('click', () => {
   carousel.addEventListener('click', () => {
     activeIndex = (activeIndex + 1) % slides.length;
     positionSlides();

@@ -61,15 +61,15 @@
                 </div>
 
                 <div class="shop-submenu liquid-glass" id="group-categories" aria-label="Categories menu">
-                  <a href="./shop/categories/posters.html"><span>posters</span><img src="../assets/icons/page-type-icons/posters-icon.svg" alt="" aria-hidden="true" /></a>
-                  <a href="./shop/categories/typefaces.html"><span>typefaces</span><img src="../assets/icons/page-type-icons/typesfaces-icon.svg" alt="" aria-hidden="true" /></a>
-                  <a href="./shop/categories/wallpapers.html"><span>wallpapers</span><img src="../assets/icons/page-type-icons/wallpapers-icon.svg" alt="" aria-hidden="true" /></a>
+                  <a href="../shop/categories/posters.html"><span>posters</span><img src="../assets/icons/page-type-icons/posters-icon.svg" alt="" aria-hidden="true" /></a>
+                  <a href="../shop/categories/typefaces.html"><span>typefaces</span><img src="../assets/icons/page-type-icons/typesfaces-icon.svg" alt="" aria-hidden="true" /></a>
+                  <a href="../shop/categories/wallpapers.html"><span>wallpapers</span><img src="../assets/icons/page-type-icons/wallpapers-icon.svg" alt="" aria-hidden="true" /></a>
                 </div>
 
                 <div class="shop-submenu liquid-glass" id="group-collections" aria-label="Collections menu">
-                  <a href="./shop/collections/fashion.html"><span>fashion</span><img src="../assets/icons/page-type-icons/fashion-icon.svg" alt="" aria-hidden="true" /></a>
-                  <a href="./shop/collections/music.html"><span>music</span><img src="../assets/icons/page-type-icons/music-icon.svg" alt="" aria-hidden="true" /></a>
-                  <a href="./shop/collections/y2k.html"><span>y2k</span><img src="../assets/icons/page-type-icons/y2k-icon.svg" alt="" aria-hidden="true" /></a>
+                  <a href="../shop/collections/fashion.html"><span>fashion</span><img src="../assets/icons/page-type-icons/fashion-icon.svg" alt="" aria-hidden="true" /></a>
+                  <a href="../shop/collections/music.html"><span>music</span><img src="../assets/icons/page-type-icons/music-icon.svg" alt="" aria-hidden="true" /></a>
+                  <a href="../shop/collections/y2k.html"><span>y2k</span><img src="../assets/icons/page-type-icons/y2k-icon.svg" alt="" aria-hidden="true" /></a>
                 </div>
               </div>
             </div>
@@ -77,7 +77,7 @@
 
           <div class="nav-group">
             <span class="nav-star" aria-hidden="true"></span>
-            <a class="nav-item nav-item-link" href="#">commissions</a>
+            <a class="nav-item nav-item-link" href="../commissions.html">commissions</a>
           </div>
 
           <div class="nav-group">
@@ -86,9 +86,22 @@
           </div>
         </nav>
 
-        <a class="bag-button" href="#" aria-label="Checkout">
-          <img src="../assets/icons/nav-icons/shopping-bag-icon.svg" alt="Shopping bag icon" />
-        </a>
+        <div class="bag-menu-wrap">
+          <button class="bag-button" type="button" aria-label="Shopping basket">
+            <img src="../assets/icons/nav-icons/shopping-bag-icon.svg" alt="Shopping bag icon" />
+          </button>
+          <aside class="cart-panel liquid-glass" aria-label="Cart panel">
+            <div class="cart-panel-header">
+              <h3>cart</h3>
+              <span class="cart-count">0 items</span>
+            </div>
+            <div class="cart-items"></div>
+            <div class="cart-panel-footer">
+              <span class="cart-total">total <strong>$0.00</strong></span>
+              <a class="primary-button" href="../checkout.html">checkout</a>
+            </div>
+          </aside>
+        </div>
       </header>
 
       <main class="template-main" aria-label="Page content placeholder"></main>
@@ -108,34 +121,5 @@
     </div>
 
     <script src="../core/js/main.js"></script>
-    <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('.shop-submenu').forEach((panel) => {
-          const reset = () => {
-            panel.style.setProperty('--tilt-x', '0deg');
-            panel.style.setProperty('--tilt-y', '0deg');
-            panel.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) scale(1)';
-          };
-
-          const move = (event) => {
-            const rect = panel.getBoundingClientRect();
-            const x = (event.clientX - rect.left) / rect.width;
-            const y = (event.clientY - rect.top) / rect.height;
-            const rotateY = (x - 0.5) * 18;
-            const rotateX = (0.5 - y) * 16;
-
-            panel.style.setProperty('--tilt-x', `${rotateX.toFixed(2)}deg`);
-            panel.style.setProperty('--tilt-y', `${rotateY.toFixed(2)}deg`);
-            panel.style.transform = `perspective(800px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) scale(1.03)`;
-          };
-
-          panel.addEventListener('pointermove', move);
-          panel.addEventListener('mousemove', move);
-          panel.addEventListener('pointerleave', reset);
-          panel.addEventListener('mouseleave', reset);
-          panel.addEventListener('pointercancel', reset);
-        });
-      });
-    </script>
   </body>
 </html>
